@@ -21,6 +21,7 @@ function draw(){
 	fill(221, 50, 50, m);
 	rect(0, 320, 480, 160);
 
-
+	console.log(map(hour(), 0, 24, 5, 100), height);
+	// print("hi");
 }
 
