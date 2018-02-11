@@ -68,7 +68,7 @@ function draw(){
 
 	// draw normal balloons
 	for (var i = 0; i < (24 - h - 1); i++){
-		iro = color(155, ball_g[i], ball_b[i]);
+		iro = color(230, ball_g[i], ball_b[i]);
 		drawBalloon(ball_x[i], 100, 50, 1, iro);
 	}
 
