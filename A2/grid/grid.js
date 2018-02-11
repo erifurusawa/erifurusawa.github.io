@@ -15,11 +15,12 @@ function setup(){
 	background('white');
 	image(img1, 0, 0, 400, 600);
 	frameRate(20);
+	stroke(50);
 
 }
 
 function drawAvenue(l, c){
-	stroke(50);
+	stroke(30);
 	if(c == 0){
 		strokeWeight(0.1);
 	} else{
@@ -59,10 +60,10 @@ function draw(){
 	// var m = 0;
 	// var h = 0;
 
-	// //testing max state
-	// var s = 60;
-	// var m = 60;
-	// var h = 24;
+	//testing max state
+	// var s = 59;
+	// var m = 59;
+	// var h = 23;
 
 	// calculate avenue locations
 	ave_west = 156;
@@ -108,26 +109,29 @@ function draw(){
 	if (strts_map % 2 == 0){
 		strts = strts_map/2;
 		drawStreets(strts, 0);
+		// print(strts);
 	} else {
 		strts = (strts_map-1)/2;
 		drawStreets(strts, 0);
 		drawStreets(strts + 1, 1);
+		// print(strts);
 	}
 
 	// print (avenues.length)
 
 	stroke(0);
 	fill(167, 176, 176);
-	// line(156, 70, 156, 581);
-	// line(237, 70, 237, 581);
-	// line(184, 70, 184, 581);
-	// line(198, 70, 198, 581);
+	line(156, 70, 156, 581);
+	line(237, 70, 237, 581);
+	line(184, 70, 184, 581);
+	line(198, 70, 198, 581);
+	print("hi")
 
-	// fill("red");
-	// point(156, 696)
-	// textSize(24);
+	stroke("red");
+	point(156, 696)
+	textSize(24);
 	// text(mouseX, 400, 200, 100);
-	// text(mouseY, 400, 400, 100);
+	// print(mouseY);
 
 	// white overlay
 	image(img2, 0, 0, 400, 600);
