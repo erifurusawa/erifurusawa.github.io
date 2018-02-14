@@ -4,6 +4,7 @@ var abstract = [];
 var section = [];
 var tags = [];
 var captions = [];
+var lines = [];
 
 function preload(){
 	var url = "https://api.nytimes.com/svc/topstories/v2/home.json";
@@ -24,11 +25,11 @@ function preload(){
 }
 
 function setup() {
-	createCanvas(3000, 3000);
+	createCanvas(1000, 1500);
 	background(255);
 	// textSize(12);
-	textWidth(9);
-	textAlign(LEFT);
+	// textWidth(9);
+	textFont("Georgia");
 	noLoop();
 
 	extractElements();
@@ -36,28 +37,45 @@ function setup() {
 
 function draw(){
 	var lineheight = 14;
-	var margin = 40;
+	var margin = 200;
+
+	push();
+	fill("red");
+	var lineheight = 26;
+	textAlign(LEFT);
+	textSize(20);
+	text("WHAT THE HEADLINE SAYS", margin, margin - 20);
+	// console.log("why?");
+	textAlign(RIGHT);
+	text("WHAT THE PHOTO SAYS", width - margin , margin - 20);
+	pop();
+
+	// push();
+	var lineheight = 14;
 	translate(margin, margin);
 
 	for (var i = 0; i < headlines.length; i++){
-
-		if (section[i] == "U.S."){
-			fill("orange");
-		} else{
-			fill("gray");
-		};
-
-		var tHeight = map(abstract[i].length, 0, 100, 1, 50);
-		textSize(tHeight);
+		var words_headlines = split(headlines[i], " ");
+		var words_captions = split(headlines[i], " ");
+		console.log(words_headlines);
+		
+		// var tHeight = map(abstract[i].length, 0, 100, 10, 10);
+		// textSize(tHeight);
 
 		// console.log(tags[i].length);
-		// var line = captions[i];
+		// draw headlines, if it shares a word with the captions, color it red
+
+		textAlign(LEFT);
 		var line2 = headlines[i];
-		// text(line, 0, (3 * i + 1) *lineheight);
-		text(line2, 0,  (3 * i + 2) *lineheight);
-		// text(abstract[i], 0,  (4 * i + 3) *lineheight);
-	}	
-}
+		text(line2, 0, i * lineheight);
+
+		textAlign(RIGHT);
+		var line3 = captions[i];
+		text(line3, width - margin * 2, i*lineheight);
+
+	}
+}	
+
 
 function extractElements(){
 	console.log(nytResponse);
@@ -78,7 +96,7 @@ function extractElements(){
 			for (var j = 0; j < c.length; j++){
 				cap = c[j]["caption"];
 				if (cap == ""){
-					cap = "no caption";
+					cap = "(no caption)";
 				}
 				append(capGroup, cap);
 			}
@@ -90,13 +108,15 @@ function extractElements(){
 		append(section, s);
 		append(abstract, a);
 		append(tags, t);
-		// // if (capGroup != "undefined") {
-		// // 	append(captions, capGroup[0]);
-		// // } else {
-		// // 	append(captions, "null");
-		// // };
 		append(captions, capGroup[0]);
 		// // console.log(captions);
 	};
 	// console.log(captions);
 }
+
+// function breakString(){
+// 	for (var i = 0; i < nytResponse.results.length; i++){
+// 		var line = captions[i].split(" ");
+// 		console.log
+// 	}
+// }
