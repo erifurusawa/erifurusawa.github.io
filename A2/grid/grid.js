@@ -14,9 +14,10 @@ function setup(){
 	createCanvas(500, 1000);
 	background('white');
 	image(img1, 0, 0, 400, 600);
-	frameRate(20);
+	frameRate(10);
 	stroke(50);
-
+	defStreets();
+	defAvenues();
 }
 
 function drawAvenue(l, c){
@@ -44,27 +45,7 @@ function drawStreets(l, c){
 	}
 }
 
-
-
-function draw(){
-	// variables go inside the local function!
-	var c = color(221, 50, 50);
-	var b = color(197, 171, 137);
-	var o = color(178, 177, 165);
-	var h = hour();
-	var m = minute();
-	var s = second();
-
-	// // testing min state
-	// var s = 0;
-	// var m = 0;
-	// var h = 0;
-
-	//testing max state
-	// var s = 59;
-	// var m = 59;
-	// var h = 23;
-
+function defAvenues(){
 	// calculate avenue locations
 	ave_west = 156;
 	cp_west = 184;
@@ -84,7 +65,40 @@ function draw(){
 	for (var i = 0; i < 5; i++){
 		j = 198 + (237-198) * i/4;
 		append(avenues, j);
+	};
+	console.log(avenues.length);
+
+}
+
+function defStreets(){
+	//calculate street locations
+
+	for (var i = 0; i < 300; i ++){
+		j = (70 + (581-70) * i/300);
+		append(streets, j);
+		// console.log(j);
+		// console.log(streets.length);
 	}
+}
+
+function draw(){
+	// variables go inside the local function!
+	var c = color(221, 50, 50);
+	var b = color(197, 171, 137);
+	var o = color(178, 177, 165);
+	var h = hour();
+	var m = minute();
+	var s = second();
+
+	// // testing min state
+	// var s = 0;
+	// var m = 0;
+	// var h = 0;
+
+	// //testing max state
+	// var s = 59;
+	// var m = 59;
+	// var h = 23;
 
 	// print(avenues[11])
 	if (h % 2 == 0){
@@ -96,42 +110,25 @@ function draw(){
 		drawAvenue(l + 1, 1);
 	}
 
-	// calculate street locations
-
-	for (var i = 0; i < 300; i ++){
-		j = (70 + (581-70) * i/300);
-		append(streets, j);
-	}
-
+	// draw streets
 	secs = m * 60 + s;
 	strts_map = floor(map(secs, 0, 3600, 0, 300));
+	// console.log(strts_map);
 
 	if (strts_map % 2 == 0){
 		strts = strts_map/2;
-		drawStreets(strts, 0);
+		drawStreets(strts_map, 0);
 		// print(strts);
 	} else {
 		strts = (strts_map-1)/2;
-		drawStreets(strts, 0);
-		drawStreets(strts + 1, 1);
+		drawStreets(strts_map, 0);
+		drawStreets(strts_map + 1, 1);
 		// print(strts);
 	}
 
-	// print (avenues.length)
-
-	stroke(0);
-	fill(167, 176, 176);
-	line(156, 70, 156, 581);
-	line(237, 70, 237, 581);
-	line(184, 70, 184, 581);
-	line(198, 70, 198, 581);
-	print("hi")
-
-	stroke("red");
-	point(156, 696)
-	textSize(24);
-	// text(mouseX, 400, 200, 100);
-	// print(mouseY);
+	// fill("red");
+	// textSize(24);
+	// text(mouseY, mouseX, mouseY);
 
 	// white overlay
 	image(img2, 0, 0, 400, 600);
