@@ -5,7 +5,6 @@ var tags = [];
 var captions = [];
 var dates = [];
 
-
 function preload(){
 	var url = "https://api.nytimes.com/svc/topstories/v2/home.json";
 	var apikey = "6d8e84bfab87407d959c058906b9ab79";
@@ -54,8 +53,8 @@ function draw(){
 	var y = String(year());
 	var m = String(month());
 	var d = day();
-	var h = hour();
-	var mi = minute();
+	var h = String(hour());
+	var mi = String(minute());
 
 	if (m.length == 1){
 		var mo = "0" + m;
@@ -92,19 +91,40 @@ function draw(){
 		} else{
 			tH = threeHour;
 		};
+		// console.log(tH)
 
-		var halfDay = y +  "-" + mo + "-" + da + " " + (ho - 12) + ":" + min;
 
-		if (ho - 12 < 0){
-			hD = y +  "-" + mo + "-" + (da - 1) + " " + (24 + ho  - 12) +  ":" + min;
-		} else{
-			hD = halfDay;
+		var hou = String(24 + ho - 12);
+		var hou_early = String(ho - 12);
+		console.log(hou.length);
+
+		if (hou_early < 0){
+			
+			if (hou.length = 0){
+				var hr = String("0" + hou);
+			} else {
+				var hr = hou;
+			}
+			var hD = y +  "-" + mo + "-" + (da - 1) + " " + hr +  ":" + min;
+			// console.log(hD);
+
+		} else if (hou_early.length == 1){
+				var hr = "0" + hou_early;
+				var hD = y +  "-" + mo + "-" + da + " " + hr + ":" + min;
+				// console.log(hD);
+
+
+		} else {
+				var hr = hou_early;
+				var hD = y +  "-" + mo + "-" + da + " " + hr + ":" + min;
+				// console.log(hD);
+
 		};
 
 		if (tH < dates[i]){
 			fill(0);
 			textStyle(BOLD);
-		} else if (tH > dates[i] && dates[i] > halfDay){
+		} else if (dates[i] > hD){
 			fill(120);
 			textStyle(NORMAL);
 		} else {
@@ -116,7 +136,8 @@ function draw(){
 		// text(line, 0, (3 * i + 1) *lineheight);
 		text(line2, 0,  (3 * i + 2) *lineheight);
 		// text(abstract[i], 0,  (4 * i + 3) *lineheight);
-		// console.log
+		// console.log(dates[i], hD,s  dates[i] > hD);
+		// console.log(tH > dates[i])
 	}	
 }
 
@@ -142,28 +163,6 @@ function extractElements(){
 		append(dates, d2);
 	};
 }
-
-
-
-// var uniqueTags = [];
-// function makeGraph(){
-// 	for (var i = 0; i < nytResponse.results.length; i++){
-// 		console.log(uniqueTags.includes(tags[i]));
-// 		// if (uniqueTags.includes(tags[i])){
-// 		// 	console.log(tags[i]);
-// 		// 	append(uniqueTags, tags[i]);
-// 		// }
-// 	}
-// 	console.log(uniqueTags);
-// }
-
-
-
-
-
-
-
-
 
 
 
