@@ -4,6 +4,8 @@ var section = [];
 var tags = [];
 var captions = [];
 var dates = [];
+var input, button;
+
 
 function preload(){
 	var url = "https://api.nytimes.com/svc/topstories/v2/home.json";
@@ -13,20 +15,28 @@ function preload(){
 }
 
 function setup() {
-	createCanvas(1000, 3000);
+	createCanvas(1500, 3000);
 	background(255);
 	textSize(20);
-	textWidth(9);
+	// textWidth(9);
 	textAlign(LEFT);
 	noLoop();
 	textFont("Georgia");
 	extractElements();
+
+	input = createInput();
+	input.position(20, 35);
+
+	button = createButton('Search');
+	button.position(input.x, 65);
+	button.mousePressed(draw);
+
 }
 
 
 function draw(){
 	var lineheight = 14;
-	var margin = 70;
+	var margin = 200;
 
 	push();
 	fill(0);
@@ -37,18 +47,18 @@ function draw(){
 	fill(120);
 	textStyle(NORMAL);
 	textAlign(CENTER);
-	text("Less than 12 hours ago", (width + margin)/ 2, 40);
+	text("Less than 12 hours ago", (1000 + margin)/ 2, 40);
 
 	fill (200);
 	textStyle(NORMAL);
 	textAlign(RIGHT);
-	text("More than 12 hours ago", width, 40);
+	text("More than 12 hours ago", 1000, 40);
 
 	pop();
 
 	line(margin, 70, width, 70);
 
-	translate(margin, margin);
+	// translate(margin, margin);
 
 	var y = String(year());
 	var m = String(month());
@@ -96,8 +106,9 @@ function draw(){
 
 		var hou = String(24 + ho - 12);
 		var hou_early = String(ho - 12);
-		console.log(hou.length);
+		// console.log(hou.length);
 
+		//determine urgency
 		if (hou_early < 0){
 			
 			if (hou.length = 0){
@@ -113,7 +124,6 @@ function draw(){
 				var hD = y +  "-" + mo + "-" + da + " " + hr + ":" + min;
 				// console.log(hD);
 
-
 		} else {
 				var hr = hou_early;
 				var hD = y +  "-" + mo + "-" + da + " " + hr + ":" + min;
@@ -121,6 +131,7 @@ function draw(){
 
 		};
 
+		// determine lineweight
 		if (tH < dates[i]){
 			fill(0);
 			textStyle(BOLD);
@@ -132,13 +143,26 @@ function draw(){
 			textStyle(NORMAL);
 		};
 
-		var line2 = headlines[i];
-		// text(line, 0, (3 * i + 1) *lineheight);
-		text(line2, 0,  (3 * i + 2) *lineheight);
-		// text(abstract[i], 0,  (4 * i + 3) *lineheight);
-		// console.log(dates[i], hD,s  dates[i] > hD);
-		// console.log(tH > dates[i])
-	}	
+		var line2 = String(headlines[i]);
+		// make array of words in each headline
+		var words = split(line2, " ");
+		// console.log(words.length);
+		var wordWidth = 0;
+	
+		for (var j = 0; j < words.length; j ++){
+		push();
+			var keyword = input.value();
+			if (words[j] == keyword){
+				fill("orange");
+			};
+			text(words[j], wordWidth + margin,  (3 * i + 2) *lineheight + margin);
+		pop();
+		wordWidth = wordWidth + textWidth(words[j] + 1);
+		};
+
+		// var searchWord = input.value();
+	
+	}
 }
 
 function extractElements(){
