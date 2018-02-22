@@ -97,9 +97,9 @@ function draw(){
 		var threeHour = y +  "-" + mo + "-" + da + " " + (ho - 3) + ":" + min;
 
 		if (ho - 3 < 0){
-			tH = y +  "-" + mo + "-" + (da - 1) + " " + (24 + ho  - 3) +  ":" + min;
-		} else{
-			tH = threeHour;
+			var tH = y +  "-" + mo + "-" + (da - 1) + " " + (24 + ho  - 3) +  ":" + min;
+		} else {
+			var tH = threeHour;
 		};
 		// console.log(tH)
 
@@ -152,12 +152,14 @@ function draw(){
 		for (var j = 0; j < words.length; j ++){
 		push();
 			var keyword = input.value();
-			if (words[j] == keyword){
+
+			if (words[j] == keyword || 
+				words[j].replace(/[;:,"'\']/i,"") == keyword){
 				fill("orange");
 			};
 			text(words[j], wordWidth + margin,  (3 * i + 2) *lineheight + margin);
 		pop();
-		wordWidth = wordWidth + textWidth(words[j] + 1);
+		wordWidth = wordWidth + textWidth(words[j] + 1) ;
 		};
 
 		// var searchWord = input.value();
