@@ -1,0 +1,146 @@
+# this is exploratory data analysis for the graffitti dataset
+
+library(dplyr)
+library(magrittr)
+library(ggplot2)
+library(lubridate)
+whole = read.csv("/Users/EriFurusawa/Documents/DataViz/erifurusawa.github.io/A4/data/DSNY_Graffiti_Information.csv")
+whole$CREATED_DATE <- whole$CREATED_DATE %>% as.character()
+
+whole <- filter(whole,
+                is.na (whole$CREATED_DATE) == FALSE)
+whole <- filter(whole,
+                is.na (whole$X_COORDINATE) == FALSE)
+whole <- filter(whole, whole$BOROUGH == "MANHATTAN")
+
+
+for (i in 1: length(whole$RESOLUTION_ACTION)){
+  # code dispatched
+  if (whole$RESOLUTION_ACTION[i] %in% c("Cleaning crew dispatched.  Property cleaned.",
+                                        "Cleaning crew dispatched.  Cannot locate property.",
+                                        "Cleaning crew dispatched.  Owner refused.",
+                                        "Cleaning crew dispatched. No graffiti on property.")){
+    disp <- 1
+  } else {
+    disp <- 0
+  }
+  whole$dispatched[i] <- disp
+  
+  # code resolution
+  if (whole$RESOLUTION_ACTION[i] %>% as.character() %>% substr(1,8)== "Cleaning"){
+    res <- as.character(whole$RESOLUTION_ACTION[i])
+  } else if (whole$RESOLUTION_ACTION[i] == "Graffiti Reported"){
+    res <- "reported"
+  } else if (whole$RESOLUTION_ACTION[i] == "Graffiti is intentional."){
+    res <- "Graffiti is intentional"
+  } else if (whole$RESOLUTION_ACTION[i] %in% c("Notice of Intent to Clean and Forever graffiti free form sent",
+                                               "Site downloaded for cleaning",
+                                               "Site to be cleaned.",
+                                               "Property Research Required")){
+    res <- "in process"
+  } else {
+    res <- "other"
+  }
+  whole$resolution[i]<- res
+}
+
+for (i in 1:length(whole$CREATED_DATE)){
+  # code month
+  
+  wholeDate <- as.character(whole$CREATED_DATE[i])
+  month <- unlist(strsplit(wholeDate, "/"))[1]
+  # day <- unlist(strsplit(wholeDate, "/"))[2]
+  year <- unlist(strsplit(wholeDate, "/"))[3]
+  
+  shortDate <- paste(year, month, sep = "/")
+  whole$date[i] <- shortDate
+  
+  # fix typos with "2047" as the year
+  if (whole$CLOSED_DATE[i] %>%  substr(7, 10) == "2047"){
+    typo <- whole$CLOSED_DATE[i]
+    whole$CLOSED_DATE[i] <- paste(substr(typo, 1, 6), "2017", sep ="")
+  }
+  
+  # code process time
+  if (whole$CLOSED_DATE[i] != ""){
+    startDate <- whole$CREATED_DATE[i] %>% mdy()
+    endDate <- whole$CLOSED_DATE[i] %>% mdy()
+    whole$responseTime[i] <- as.numeric(endDate - startDate) 
+  } else {
+    whole$responseTime[i] <- "NA"
+  }
+}
+whole$responseTime <- as.numeric(whole$responseTime)
+
+# code day of week
+for (i in 1: length(whole$CREATED_DATE)){
+
+  today <- whole$CREATED_DATE[i] %>% mdy()
+  beginning <- "01/01/2017" %>% mdy()
+  days <- (today - beginning) %>%  as.numeric()
+  if (days %% 7 == 0){
+    dow <- "Sunday"
+  } else if (days %% 7 == 1){
+    dow <- "Monday" 
+  } else if (days %% 7 == 2) {
+    dow <- "Tuesday"
+  } else if (days %% 7 == 3) {
+    dow <- "Wednesday" 
+  } else if (days %% 7 == 4){
+    dow <- "Thursday"
+  } else if (days %% 7 == 5){
+    dow <- "Friday"
+  } else{
+    dow <- "Saturday"
+  }
+  whole$dow[i] <- dow
+  
+  if (days %% 7 == 0 || days && 7 == 6){
+    whole$weekday[i] <- 0
+  } else {
+    whole$weekday[i] <- 1
+  }
+}
+
+
+# create new table counting the occurences per location
+for (i in 1:length(whole$INCIDENT_ADDRESS)){
+  # code latlong column
+  lllist <- paste(whole$X_COORDINATE[i], whole$Y_COORDINATE[i], sep = ",") 
+  whole$latlong[i] <- lllist
+}
+whole$latlong <- whole$latlong %>% as.character()
+whole$count <- 1
+occurrences <- data.frame()
+
+for (i in 1:length(whole$INCIDENT_ADDRESS)){
+  if (whole$latlong[i] %in% occurrences$latlong){
+    p <- grep(whole$latlong[i], occurrences$latlong)
+    occurrences$count[p] = occurrences$count[p]+ 1
+  } else {
+    occurrences <- rbind(occurrences, whole[i,])
+  }
+}
+
+# export
+
+write.csv(whole, "/Users/EriFurusawa/Documents/DataViz/erifurusawa.github.io/A4/beta/whole.csv")
+write.csv(occurrences, "/Users/EriFurusawa/Documents/DataViz/erifurusawa.github.io/A4/beta/occurrences.csv")
+
+# possible categorizations
+refused <- filter(manhattan, 
+                 manhattan$RESOLUTION_ACTION == "Cleaning crew dispatched.  Owner refused.")
+
+districtone = filter(whole,
+                     whole$CITY_COUNCIL_DISTRICT == "1")
+unlocated <- filter(whole, 
+                    whole$RESOLUTION_ACTION == "Cleaning crew dispatched. Cannot locate property.")
+
+unnecessary <- filter(whole, whole$RESOLUTION_ACTION == "10-90Y - Unnecessary")
+disp <- filter(whole, whole$dispatched == 1)
+undisp <- filter(whole, whole$dispatched == 0)
+july <- filter(whole, whole$date == "2017/07")
+# plotting
+
+ggplot(refused, aes(refused$X_COORDINATE, refused$Y_COORDINATE, 
+                    color = refused$BOROUGH)) + geom_point()
