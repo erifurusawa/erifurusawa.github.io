@@ -47,7 +47,7 @@ function draw(){
 	}
 
 	// draw legend
-	textFont("Courier");
+	textFont("Impact");
 	textSize(24);
 	fill(0, 43, 84)
 	text("Graffiti Reportings in Manhattan (2017 - 2018)", 50, 50);
