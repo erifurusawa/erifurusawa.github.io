@@ -54,20 +54,26 @@ function draw(){
 
 	textSize(16);
 	textAlign(LEFT);
-	text("Intentional", 50, 120);
+	text("'Intentional' graffiti", 50, 120);
 	text("Reported once", 50, 150);
 	text("Reported six times", 50,200);
 
 	fill(236, 0, 140);
-	ellipse(300, 120 - 5, map(1,1,6,5,50));
+	ellipse(230, 120 - 5, map(1,1,6,5,50));
 
 
 	fill(0, 43, 84,30)
-	ellipse(300, 150 - 5, map(1, 1, 6, 5, 50));
-	ellipse(300, 200 - 5, map(6, 1, 6, 5, 50));
+	ellipse(230, 150 - 5, map(1, 1, 6, 5, 50));
+	ellipse(230, 200 - 5, map(6, 1, 6, 5, 50));
 
 	// console.log("hello")
 	// add description
+	// textFont("Georgia");
+	textSize(12);
+	fill(0, 43, 84, 100)
+	var description = "'Intentional' graffiti refers to graffiti approved by the building owner, such as signage, murals, etc.";
+
+	text(description, 50, 250, 240, 400)
 }
 
 
