@@ -117,9 +117,6 @@ for (i in 1:length(whole$INCIDENT_ADDRESS)){
   if (whole$latlong[i] %in% occurrences$latlong){
     p <- grep(whole$latlong[i], occurrences$latlong)
     occurrences$count[p] = occurrences$count[p]+ 1
-    # include all days of the week on which each report occurred
-    occurrences$dow[p] = paste(occurrences$dow[p], whole$dow[i], sep = ",")
-    occurrences$weekday[p] = occurrences$weekday[p] + whole$weekday[i]
   } else {
     occurrences <- rbind(occurrences, whole[i,])
   }

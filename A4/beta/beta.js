@@ -3,7 +3,7 @@ var whole;
 var occurrences;
 
 function preload(){
-	whole = loadTable("whole.csv", "csv", "header");
+	dayssum = loadTable("dayssum.csv", "csv", "header");
 	occurrences = loadTable("occurrences.csv", "csv", "header");
 	// console.log("hi");
 
