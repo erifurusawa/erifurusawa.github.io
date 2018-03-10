@@ -146,19 +146,29 @@ function draw(){
 	var bwidth = 15;
 	var bmargin = 10;
 
+	var iro = [color(0, 43, 84), color(236, 0, 140)];
+	// console.log(iro[0]);
 
 	for (var i = 0; i < uniqueday.length; i ++){
 		// console.log(days[uniqueday[i]]);
 		// console.log(uniqueday[i]);
 
 		push();
-		fill(color(0, 43, 84));
+		if (uniqueday[i] == "Saturday" || uniqueday[i] == "Sunday"){
+			fill(iro[1]);
+		} else {
+			fill(iro[0]);
+		}
+		
 		translate(upperX, upperY + i * (bwidth + bmargin));
 		// draw rectangles
 		var blength = map(days[uniqueday[i]], 0, 700, 0, 300);
 		rect(0, 0, blength, bwidth);
 
-		// write day of week and number of occurrences
+		// write number of occurrences
+		text(days[uniqueday[i]], blength + 10, bwidth/2 + 3)
+
+		// write day of week
 		
 		fill(255);
 		textSize(10);
@@ -166,8 +176,8 @@ function draw(){
 		text(uniqueday[i], 5, bwidth/2 + 3);
 	
 
-		fill(0, 43, 84);
-		text(days[uniqueday[i]], blength + 10, bwidth/2 + 3)
+		// fill(0, 43, 84);
+		
 
 		pop();
 
