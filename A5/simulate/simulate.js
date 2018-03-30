@@ -59,7 +59,7 @@ function Boid(x,y) {
   this.position = createVector(x,y);
   this.r = 3.0;
   this.maxspeed = speed_hour;    // Maximum speed
-  this.maxforce = 0.1; // Maximum steering force
+  this.maxforce = 0.5; // Maximum steering force
 }
 
 Boid.prototype.run = function(boids) {
@@ -83,7 +83,7 @@ Boid.prototype.flock = function(boids) {
   var coh = this.cohesion(boids);   // Cohesion
   // Arbitrarily weight these forces
   sep.mult(map(m, 0, 60, 200, 0));
-  ali.mult(map(m, 0, 60, 200, 0));
+  // ali.mult(map(m, 0, 60, 200, 0));
   coh.mult(0.5);
   // Add the force vectors to acceleration
   this.applyForce(sep);

@@ -16,7 +16,7 @@ function preload(){
 
 function setup() {
 	createCanvas(1500, 3000);
-	background(255);
+	// background(255);
 	textSize(20);
 	// textWidth(9);
 	textAlign(LEFT);
@@ -62,9 +62,9 @@ function draw(){
 
 	var y = String(year());
 	var m = String(month());
-	var d = day();
-	var h = String(hour());
-	var mi = String(minute());
+	var d = String(day());
+	var h = hour();
+	var mi = minute();
 
 	if (m.length == 1){
 		var mo = "0" + m;
@@ -74,6 +74,7 @@ function draw(){
 
 	if (d.length == 1){
 		var da = "0" + d;
+		var yda = "0" + (d-1);
 	} else {
 		var da = d;
 	};
@@ -89,11 +90,12 @@ function draw(){
 	} else {
 		var min = mi;
 	};
-
-	
+	console.log(da);
+	// 
 	for (var i = 0; i < headlines.length; i++){
 		// var ho = 2;
 		var now = y + "-" + mo + "-" + da + " " + ho + ":" + min;
+		// console.log(now);
 		var threeHour = y +  "-" + mo + "-" + da + " " + (ho - 3) + ":" + min;
 
 		if (ho - 3 < 0){
@@ -101,12 +103,13 @@ function draw(){
 		} else {
 			var tH = threeHour;
 		};
-		// console.log(tH)
+		console.log(tH);
 
 
 		var hou = String(24 + ho - 12);
 		var hou_early = String(ho - 12);
-		// console.log(hou.length);
+		// console.log(hou);
+		// console.log(ho + 1);
 
 		//determine urgency
 		if (hou_early < 0){
@@ -117,7 +120,7 @@ function draw(){
 				var hr = hou;
 			}
 			var hD = y +  "-" + mo + "-" + (da - 1) + " " + hr +  ":" + min;
-			// console.log(hD);
+			console.log(hD);
 
 		} else if (hou_early.length == 1){
 				var hr = "0" + hou_early;
@@ -130,6 +133,7 @@ function draw(){
 				// console.log(hD);
 
 		};
+		// console.log(hou);
 
 		// determine lineweight
 		if (tH < dates[i]){
@@ -142,6 +146,8 @@ function draw(){
 			fill (200);
 			textStyle(NORMAL);
 		};
+		console.log(tH);
+		console.log(hD);
 
 		var line2 = String(headlines[i]);
 		// make array of words in each headline
