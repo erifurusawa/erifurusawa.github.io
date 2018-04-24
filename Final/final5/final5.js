@@ -23,7 +23,9 @@ var assess = [];
 
 var mapto = 500;
 var mapto2 = 200;
-var d = 5;
+var d = 4.5;
+
+
 
 
 // var bldgs_sorted = [];
@@ -169,6 +171,10 @@ function lineup07(cd){        // divide by 07, line by built year
 	var nozone_index = 0;
 	var zone_index = 0;
 	var bldgs_cd = bldgs_sorted[cd];
+
+	var col_low = color(88, 87, 75);
+	var col_mid = color(178, 177, 165);
+	var col_high = color(255, 239, 108);
 	//DRAW BUILDING FOOTPRINTS
 	for (var i = 0; i < bldgs_cd.length; i++){
 		var off_1x;
@@ -177,8 +183,8 @@ function lineup07(cd){        // divide by 07, line by built year
 		// DETERMINE POLYGON SIZE
 		var area_original = bldgs_cd[i][1][11];
 		var area = map(area_original, 0, 30000, 0, 10);
-		var zone_rownum = 30;
-		var nozone_rownum = 30;
+		var zone_rownum = 35;
+		var nozone_rownum = 35;
 		var zone = bldgs_cd[i][1][6];
 		var sd = bldgs_cd[i][1][8]
 		var firstx = bldgs_cd[i][1][2];
@@ -190,11 +196,11 @@ function lineup07(cd){        // divide by 07, line by built year
 
 		// define color //////////////////////////////////////////////////
 		if (assessed < 1495800){           // 1495800 is the median 
-			fill("white");
+			fill(col_low);
 		} else if (assessed < 47393100){     // 47393100 is the top 5% 
-			fill ("grey");
+			fill (col_mid);
 		} else {
-			fill ("red");
+			fill (col_high);
 		}
 		// define position ///////////////////////////////////////////////
 		if (zone == 1){
@@ -258,8 +264,8 @@ function lineupsandy(cd){        // divide by sandy, line by built year
 		// DETERMINE POLYGON SIZE
 		var area_original = bldgs_cd[i][1][11];
 		var area = map(area_original, 0, 30000, 0, 10);
-		var zone_rownum = 30;
-		var nozone_rownum = 30;
+		var zone_rownum = 35;
+		var nozone_rownum = 35;
 		var zone = bldgs_cd[i][1][6];
 		var sd = bldgs_cd[i][1][8]
 		var firstx = bldgs_cd[i][1][2];
@@ -341,7 +347,9 @@ function mouseWheel (event){
 
 function draw(){
 	// always use drawGeo first, then lineup07
-	background(255);
+	
+	var col_base = color(0, 0, 0);
+	background(col_base);
 	push();
 	translate(900,0);
 	drawGeo(101);
