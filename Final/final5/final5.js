@@ -26,12 +26,14 @@ var mapto2 = 200;
 var d = 4.5;
 
 
+var pos = 0;
+var state = 101;
 
 
 // var bldgs_sorted = [];
 
 function setup(){
-	createCanvas(1920, 1000);
+	createCanvas(1920, 5000);
 	noStroke();
 	// noLoop();
 	loadData();
@@ -127,34 +129,94 @@ function loadData(){
 
 
 
-function drawGeo(cd){
+function drawGeo(cd, state){
 	var bldgs_cd = bldgs_sorted[cd];
+	var col_mid = color(88, 87, 75);
+	var col_low = color(178, 177, 165);
+	var col_high = color(236, 0, 140);
+	var state = state || 0;
+
+
 	// DRAW BUILDING FOOTPRINTS
 	for (var i = 0; i < bldgs_sorted[cd].length; i++){
-
+		var assessed = bldgs_cd[i][1][4];
+		var zone = bldgs_cd[i][1][6];
+		var sd = bldgs_cd[i][1][8];	
 		// DETERMINE COLOR
 		push();
 
-		if (bldgs_cd[i][1][8] == 1){       // sandy
-			fill("blue");
+		if (state == 1) { // color by flood zone 07
+			if (zone == 1) {
+				fill ("red")
+			} else {
+				fill ("black")
+			} 
 		} else {
-			fill("black");
-		};
+			if (assessed < 1495800){           // 1495800 is the median 
+				fill(col_low);
+			} else if (assessed < 47393100){     // 47393100 is the top 5% 
+				fill (col_mid);
+			} else {
+				fill (col_high);
+			}
+		}
+	
+		
 
 		beginShape();
 		// console.log(outlines[1][0].length);
 		for (var j = 0; j < bldgs_cd[i][1][1][0].length; j++){
-			var point_x = map(bldgs_cd[i][1][1][0][j][0], 980000, 1000000, 0, mapto2);
-			var point_y = map(bldgs_cd[i][1][1][0][j][1], 190000, 210000, 0, mapto2);
+			var point_x = map(bldgs_cd[i][1][1][0][j][0], 980000, 1000000, 0, mapto);
+			var point_y = map(bldgs_cd[i][1][1][0][j][1], 190000, 210000, 0, mapto);
 			vertex(point_x + 150, 1500 - point_y - 1000);
 
-			// store location as the last element of  bldgs_sorted object
-			var coords = [point_x, 1500 - point_y];
-			if (bldgs_sorted[cd][i][1].length == 12){ // no vertex yet
-				bldgs_sorted[cd][i][1][12] = [coords];
-			} else {
-				bldgs_sorted[cd][i][1][12].push(coords);
-			}
+			// // store location as the last element of  bldgs_sorted object
+			// var coords = [point_x, 1500 - point_y];
+			// if (bldgs_sorted[cd][i][1].length == 12){ // no vertex yet
+			// 	bldgs_sorted[cd][i][1][12] = [coords];
+			// } else {
+			// 	bldgs_sorted[cd][i][1][12].push(coords);
+			// }
+		}
+		endShape(CLOSE);
+
+		pop();
+		// console.log(bldgs_sorted[cd]);
+	}
+	// console.log(bldgs_sorted[101][0][1]);
+
+}
+
+function drawGeo_flood(cd){
+	var bldgs_cd = bldgs_sorted[cd];
+	
+
+	// DRAW BUILDING FOOTPRINTS
+	for (var i = 0; i < bldgs_sorted[cd].length; i++){
+		var zone = bldgs_cd[i][1][6];
+		var sd = bldgs_cd[i][1][8]		// DETERMINE COLOR
+		push();
+
+		if (zone == 1){ 
+			fill("red");
+		} else {
+			fill("black");
+		};
+	
+		beginShape();
+		// console.log(outlines[1][0].length);
+		for (var j = 0; j < bldgs_cd[i][1][1][0].length; j++){
+			var point_x = map(bldgs_cd[i][1][1][0][j][0], 980000, 1000000, 0, mapto);
+			var point_y = map(bldgs_cd[i][1][1][0][j][1], 190000, 210000, 0, mapto);
+			vertex(point_x + 150, 1500 - point_y - 1000);
+
+			// // store location as the last element of  bldgs_sorted object
+			// var coords = [point_x, 1500 - point_y];
+			// if (bldgs_sorted[cd][i][1].length == 12){ // no vertex yet
+			// 	bldgs_sorted[cd][i][1][12] = [coords];
+			// } else {
+			// 	bldgs_sorted[cd][i][1][12].push(coords);
+			// }
 		}
 		endShape(CLOSE);
 
@@ -166,15 +228,14 @@ function drawGeo(cd){
 }
 
 	
-
-function lineup07(cd){        // divide by 07, line by built year
+function simple (cd){        // divide by 07, line by built year
 	var nozone_index = 0;
 	var zone_index = 0;
 	var bldgs_cd = bldgs_sorted[cd];
 
-	var col_low = color(88, 87, 75);
-	var col_mid = color(178, 177, 165);
-	var col_high = color(255, 239, 108);
+	var col_mid = color(88, 87, 75);
+	var col_low = color(178, 177, 165);
+	var col_high = color(236, 0, 140);
 	//DRAW BUILDING FOOTPRINTS
 	for (var i = 0; i < bldgs_cd.length; i++){
 		var off_1x;
@@ -202,6 +263,85 @@ function lineup07(cd){        // divide by 07, line by built year
 		} else {
 			fill (col_high);
 		}
+		// define position ///////////////////////////////////////////////
+
+
+		zone_index = zone_index + 1;
+		// console.log(zone_index);
+		var row = zone_index % zone_rownum;
+		var column = (zone_index - row)/zone_rownum;
+	
+		off_1x = - map(firstx, 980000, 1000000, 0, mapto) + 170 + row * d;
+		off_1y = - map(firsty, 190000, 210000, 0, mapto) + column * d;
+	
+
+		
+		beginShape();
+		
+		for (var j = 0; j < bldgs_cd[i][1][1][0].length; j++){
+			// console.log(bldgs[outlines[i]].length);
+			// var point_x = map(outlines[i][0][j][0], 980000, 1000000, 0, 1000);
+			var point_x = map(bldgs_cd[i][1][1][0][j][0], 980000, 1000000, 0, mapto);
+			var point_y = map(bldgs_cd[i][1][1][0][j][1], 190000, 210000, 0, mapto);
+			vertex(point_x + off_1x, point_y + off_1y + 100);
+			// // store location as the last element of  bldgs_sorted object
+			// var coords07 = [point_x + off_1x, point_y + off_1y];
+
+			// if (bldgs_sorted[cd][i][1].length == 13){ // no vertex yet
+			// 	bldgs_sorted[cd][i][1][13] = [coords07];
+			// } else {
+			// 	bldgs_sorted[cd][i][1][13].push(coords07);
+
+			// }
+			// console.log(bldgs_cd[i][1][13]);
+		}
+		endShape(CLOSE);	
+	}
+}	
+
+function lineup07(cd, state){        // divide by 07, line by built year
+	var nozone_index = 0;
+	var zone_index = 0;
+	var bldgs_cd = bldgs_sorted[cd];
+
+	var col_mid = color(88, 87, 75);
+	var col_low = color(178, 177, 165);
+	var col_high = color(236, 0, 140);
+	var state = state || 1;
+	//DRAW BUILDING FOOTPRINTS
+	for (var i = 0; i < bldgs_cd.length; i++){
+		var off_1x;
+		var off_1y;
+
+		// DETERMINE POLYGON SIZE
+		var area_original = bldgs_cd[i][1][11];
+		var area = map(area_original, 0, 30000, 0, 10);
+		var zone_rownum = 35;
+		var nozone_rownum = 35;
+		var zone = bldgs_cd[i][1][6];
+		var sd = bldgs_cd[i][1][8]
+		var firstx = bldgs_cd[i][1][2];
+		var firsty = bldgs_cd[i][1][3];
+		var year = bldgs_cd[i][1][9];
+		var assessed = bldgs_cd[i][1][4];
+
+		// console.log(zone + sd);
+
+		// define color //////////////////////////////////////////////////
+		if (state == 1){  // color by flood zone 07
+			if (zone == 1) {
+				fill ("red")
+			} else {
+				fill ("black")
+			}
+		} else if (assessed < 1495800){           // 1495800 is the median 
+			fill(col_low);
+		} else if (assessed < 47393100){     // 47393100 is the top 5% 
+			fill (col_mid);
+		} else {
+			fill (col_high);
+		}
+		
 		// define position ///////////////////////////////////////////////
 		if (zone == 1){
 
@@ -233,15 +373,15 @@ function lineup07(cd){        // divide by 07, line by built year
 			var point_x = map(bldgs_cd[i][1][1][0][j][0], 980000, 1000000, 0, mapto);
 			var point_y = map(bldgs_cd[i][1][1][0][j][1], 190000, 210000, 0, mapto);
 			vertex(point_x + off_1x, point_y + off_1y + 100);
-			// store location as the last element of  bldgs_sorted object
-			var coords07 = [point_x + off_1x, point_y + off_1y];
+			// // store location as the last element of  bldgs_sorted object
+			// var coords07 = [point_x + off_1x, point_y + off_1y];
 
-			if (bldgs_sorted[cd][i][1].length == 13){ // no vertex yet
-				bldgs_sorted[cd][i][1][13] = [coords07];
-			} else {
-				bldgs_sorted[cd][i][1][13].push(coords07);
+			// if (bldgs_sorted[cd][i][1].length == 13){ // no vertex yet
+			// 	bldgs_sorted[cd][i][1][13] = [coords07];
+			// } else {
+			// 	bldgs_sorted[cd][i][1][13].push(coords07);
 
-			}
+			// }
 			// console.log(bldgs_cd[i][1][13]);
 		}
 		endShape(CLOSE);	
@@ -320,14 +460,14 @@ function lineupsandy(cd){        // divide by sandy, line by built year
 
 
 
-			// store location as the last element of  bldgs_sorted object
-			var coords07 = [point_x + off_1x, point_y + off_1y];
+			// // store location as the last element of  bldgs_sorted object
+			// var coords07 = [point_x + off_1x, point_y + off_1y];
 
-			if (bldgs_sorted[cd][i][1].length == 14){ // no vertex yet
-				bldgs_sorted[cd][i][1][14] = [coords07];
-			} else {
-				bldgs_sorted[cd][i][1][14].push(coords07);
-			}
+			// if (bldgs_sorted[cd][i][1].length == 14){ // no vertex yet
+			// 	bldgs_sorted[cd][i][1][14] = [coords07];
+			// } else {
+			// 	bldgs_sorted[cd][i][1][14].push(coords07);
+			// }
 			// console.log(bldgs_cd[i][1][13]);
 		
 		}
@@ -336,43 +476,68 @@ function lineupsandy(cd){        // divide by sandy, line by built year
 	// console.log(bldgs_sorted[cd]);
 }	
 
-var pos = 0;
+// function mouseWheel (event){
+// 	// print (event.delta);
+// 	pos += event.delta;
+// 	return false;
 
-function mouseWheel (event){
-	// print (event.delta);
-	pos += event.delta;
-	return false;
-}
+// }
 
 
 function draw(){
-	// always use drawGeo first, then lineup07
-	
-	var col_base = color(0, 0, 0);
-	background(col_base);
-	push();
-	translate(900,0);
-	drawGeo(101);
-	drawGeo(102);
-	drawGeo(103);
-	pop();
-	// background(0);
-	// translate(400, 0);
 
-	// console.log(pos);
+	var col_base = color(255);
+	background(col_base);
+
 	push();
-	translate(50, -pos);
-	lineup07(101);
+	// 1
+	translate(400, -40);
+	drawGeo(101, 0);
+
+	// 2
+	translate(0, 600);
+	drawGeo(101);
+	push();
+	translate(300,50);
+	simple(101);
+	pop();
+	// translate(450, 0);
+
+	// 3
+	translate(0, 500);
+	drawGeo(101,1);
+	push();
+	translate(450, 100);
+	lineup07(101, 1);
+	pop();
+
+	// 4
+
+	translate(0, 600);
+	drawGeo(101,1);
+	push();
+	translate(450, 100);
+	lineup07(101, 1);
+	translate(400, 0);
+	lineupsandy(101);
+	pop();
+
+	// 5
+
+	translate(0, 600);
+	drawGeo(101,1);
+	push();
+	translate(450, 100);
+	lineup07(101, 1);
 	translate(400, 0);
 	lineupsandy(101);
 	pop();
 	
 	push();
-	translate(50, -pos + 600);
-	lineup07(102);
-	translate(400, 0);
-	lineupsandy(102);
+	fill(0);
+	text("how to read it", 50, -pos);
 	pop();
+
 }
 
 
