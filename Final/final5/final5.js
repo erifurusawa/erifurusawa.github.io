@@ -551,6 +551,7 @@ function drawLegend(x, y, exp, col) {
 
 
 function draw(){
+	textFont("Georgia");
 
 	var col_base = color(255);
 	background(col_base);
@@ -562,7 +563,9 @@ function draw(){
 	fill(0);
 	var title = ("FALSE PREDICTIONS")
 	textSize(40);
-	text(title, 400, 300 -pos);
+	text(title, 440, 300 -pos);
+
+	// translate(-36,0);
 	textSize(16);
 	var t1 = ("Lower Manhattan has a high concentration of valuable properties");
 	text(t1, 470, 700 - pos);
