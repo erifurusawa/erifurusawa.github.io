@@ -147,7 +147,7 @@ function drawGeo(cd, state){
 
 		if (state == 1) { // color by flood sandy
 			if (sd == 1) {
-				fill ("red")
+				fill (color(221, 50, 50));
 			} else {
 				fill ("black")
 			} 
@@ -264,7 +264,7 @@ function simple (cd, sandyState){        // divide by 07, line by built year
 		
 		if (sandyState == 1){ // color by sandy
 			if(sd == 1){
-				fill("red");
+				fill(color(221, 50, 50));
 			} else {
 				fill("black");
 			}
@@ -438,7 +438,7 @@ function lineupsandy(cd, state){        // divide by sandy, line by built year
 		// define color //////////////////////////////////////////////////
 		if (state == 1){  // color by sandy
 			if (sd == 1) {
-				fill ("red")
+				fill (color(221, 50, 50));
 			} else {
 				fill ("black")
 			}
@@ -518,8 +518,8 @@ function drawArrow(x, y, arrowlength){
 	push();
 	textSize(12);
 	// stroke(30);
-	fill(120);
-	stroke(120);
+	fill(0);
+	stroke(0);
 	line(start_x, start_y , start_x, start_y + arrowlength);
 
 	line(start_x, start_y, start_x - xdif, start_y + ydif);
@@ -607,7 +607,7 @@ function draw(){
 		lineupsandy(101,1);
 		pop();
 		textSize(10);
-		drawLegend(55, 600, "buildings flooded by Sandy", "red");
+		drawLegend(55, 600, "buildings flooded by Sandy", color(221, 50, 50));
 	
 	}
 
