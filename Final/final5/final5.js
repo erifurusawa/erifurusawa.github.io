@@ -189,18 +189,20 @@ function drawGeo(cd, state){
 
 function drawGeo_flood(cd){  //maps changes bewteen sandy and zone
 	var bldgs_cd = bldgs_sorted[cd];
-	
+	var col_flooded = color(26, 134, 168);
+	var col_false = color(246, 139, 105);
 
 	// DRAW BUILDING FOOTPRINTS
 	for (var i = 0; i < bldgs_sorted[cd].length; i++){
 		var zone = bldgs_cd[i][1][6];
-		var sd = bldgs_cd[i][1][8]		// DETERMINE COLOR
+		var sd = bldgs_cd[i][1][8];
+				// DETERMINE COLOR
 		push();
 
 		if (zone != 1 && sd == 1){ 
-			fill("pink");
+			fill(col_false);
 		} else if (sd == 1){
-			fill("orange");
+			fill(col_flooded);
 		} else{
 			fill("black");
 		}
@@ -267,7 +269,7 @@ function simple (cd, sandyState){        // divide by 07, line by built year
 				fill("black");
 			}
 		} else if (assessed < 1495800){           // 1495800 is the median 
-			fill(col_low);
+			fill(col_mid);
 		} else if (assessed < 47393100){     // 47393100 is the top 5% 
 			fill (col_mid);
 		} else {
@@ -319,6 +321,8 @@ function lineup07(cd, state){        // divide by 07, line by built year
 	var col_low = color(178, 177, 165);
 	var col_high = color(236, 0, 140);
 	var state = state || 1;
+	var col_flooded = color(26, 134, 168);
+	var col_false = color(246, 139, 105);
 	//DRAW BUILDING FOOTPRINTS
 	for (var i = 0; i < bldgs_cd.length; i++){
 		var off_1x;
@@ -341,9 +345,9 @@ function lineup07(cd, state){        // divide by 07, line by built year
 		// define color //////////////////////////////////////////////////
 		if (zone != 1 && sd == 1){ 
 			console.log(zone);
-			fill("pink");      // pink if unpredicted 
+			fill(col_false);      // pink if unpredicted 
 		} else if (sd == 1){
-			fill("orange");	// orange if predicted 
+			fill(col_flooded);	// orange if predicted 
 		} else{
 			fill("black");
 		}
@@ -407,6 +411,8 @@ function lineupsandy(cd, state){        // divide by sandy, line by built year
 	var zone_index = 0;
 	var bldgs_cd = bldgs_sorted[cd];
 	var state = state || 1;
+	var col_flooded = color(26, 134, 168);
+	var col_false = color(246, 139, 105);
 
 	// console.log(bfs.length);
 
@@ -501,60 +507,134 @@ function mouseWheel (event){
 
 }
 
+function drawArrow(x, y, arrowlength){
+	var xdif = 6;
+	var ydif = 8;
+	var start_x = x;
+	var start_y = y;
+	var arrowlength = arrowlength;
+	noFill();
+
+	push();
+	textSize(12);
+	// stroke(30);
+	fill(120);
+	stroke(120);
+	line(start_x, start_y , start_x, start_y + arrowlength);
+
+	line(start_x, start_y, start_x - xdif, start_y + ydif);
+	line(start_x, start_y, start_x + xdif, start_y + ydif);
+	line(start_x, start_y + arrowlength, start_x - xdif, start_y + arrowlength - ydif);
+	line(start_x, start_y + arrowlength, start_x + xdif, start_y + arrowlength - ydif);
+	var old = ("old");
+	var recent = ("recent")
+	text(old, start_x - 8, start_y - 10);
+	text(recent, start_x- 12, start_y + arrowlength + 15);
+	pop();
+
+}
+
+function drawLegend(x, y, exp, col) {
+	var box_x  = x;
+	var box_y  = y;
+	var fillcolor = col;
+	var exp = exp;
+	var rectwidth = 10;
+
+	push();
+	fill(col);
+	rect(box_x, box_y, rectwidth, rectwidth);
+	// fill(0);
+	text(exp, box_x + 20, box_y + 8);
+
+}
+
 
 function draw(){
 
 	var col_base = color(255);
 	background(col_base);
+	translate(100, 100);
+	console.log(mouseX, mouseY);
 
 
-	push();
 	// 1
 	fill(0);
+	var title = ("FALSE PREDICTIONS")
+	textSize(40);
+	text(title, 400, 300 -pos);
+	textSize(16);
 	var t1 = ("Lower Manhattan has a high concentration of valuable properties");
-	text(t1, 50, 600 - pos);
+	text(t1, 470, 700 - pos);
 	fill(255);
 	// rect(50, 0, width, 300);
-	translate(50, -40);
+	// translate(50, -40);
 	drawGeo(101, 0);
+
 	push();
 	translate(300,650 -pos);
 	simple(101, 0);
+	drawArrow(350, 120, 180);
 	pop();
-	console.log(pos);
 
-	var first = 750;
+	textSize(10);
+	drawLegend(55, 600, "buildings with top 5% assessed value in Manhattan", color(236, 0, 140));
+	// fill(0);
+	
+	// console.log(pos);
+
+	var first = 800;
 
 	if (pos > first){
+		push();
 		background(col_base);
 		drawGeo(101,1);
 		fill(0);
+		textSize(16);
+		translate(0, 400);
 		var t2 = ("Many were flooded by Sandy");
-		text(t2, 50, 600);
-		push();
-		translate(300, 600 - pos + first);
-		simple(101, 1);
+		text(t2, 470, 50 - pos + first);
 
-		translate(180, 500)
+	
+		translate(300, - pos + first);
+		simple(101, 1);
+		drawArrow(350, 120, 180);
+
+		translate(180, 600)
 		lineupsandy(101,1);
 		pop();
+		textSize(10);
+		drawLegend(55, 600, "buildings flooded by Sandy", "red");
+	
 	}
 
-	var second = 2000;
+	var second = 1600;
 
 	if (pos > second){
 		background(col_base);
 		drawGeo_flood(101);
+		
+		var col_flooded = color(26, 134, 168);
+		var col_false = color(246, 139, 105);
 
-		fill(0);
-		var t3 = ("Sandy flooded non-flood zones");
-		text(t3, 50, 600);
 		push();
+		translate(0, 100);
+		fill(0);
+		textSize(16);
+		var t3 = ("Flood maps did not predict Sandy damage accurately");
+		text(t3, 420, 550 - pos + second);
 		translate(800, 600 - pos + 1500);
 		lineupsandy(101, 1);
 		
 		translate(-380, 0);
 		lineup07(101);
+		pop();
+
+		drawLegend(55, 600, "buildings in flood zones affected by Sandy", col_flooded);
+		drawLegend(55, 620, "buildings outside flood zones affected by Sandy",col_false);
+
+
+
 	}
 	// 2
 
