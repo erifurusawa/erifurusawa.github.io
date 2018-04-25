@@ -153,9 +153,9 @@ function drawGeo(cd, state){
 			} 
 		} else {
 			if (assessed < 1495800){           // 1495800 is the median 
-				fill(col_low);
+				fill("black");
 			} else if (assessed < 47393100){     // 47393100 is the top 5% 
-				fill (col_mid);
+				fill ("black");
 			} else {
 				fill (col_high);
 			}
@@ -269,9 +269,9 @@ function simple (cd, sandyState){        // divide by 07, line by built year
 				fill("black");
 			}
 		} else if (assessed < 1495800){           // 1495800 is the median 
-			fill(col_mid);
+			fill("black");
 		} else if (assessed < 47393100){     // 47393100 is the top 5% 
-			fill (col_mid);
+			fill ("black");
 		} else {
 			fill (col_high);
 		}
