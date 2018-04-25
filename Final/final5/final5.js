@@ -33,7 +33,7 @@ var state = 101;
 // var bldgs_sorted = [];
 
 function setup(){
-	createCanvas(1920, 2000);
+	createCanvas(1920, 1000);
 	noStroke();
 	// noLoop();
 	loadData();
