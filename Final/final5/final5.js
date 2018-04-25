@@ -611,7 +611,7 @@ function draw(){
 	
 	}
 
-	var second = 1600;
+	var second = 1800;
 
 	if (pos > second){
 		background(col_base);
@@ -625,8 +625,8 @@ function draw(){
 		fill(0);
 		textSize(16);
 		var t3 = ("Flood maps did not predict Sandy damage accurately");
-		text(t3, 420, 550 - pos + second);
-		translate(800, 600 - pos + 1500);
+		text(t3, 420, 550 - pos + 1500);
+		translate(800, 500 - pos + 1500);
 		lineupsandy(101, 1);
 		
 		translate(-380, 0);
