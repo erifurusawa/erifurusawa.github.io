@@ -33,7 +33,7 @@ var state = 101;
 // var bldgs_sorted = [];
 
 function setup(){
-	createCanvas(1920, 5000);
+	createCanvas(1920, 2000);
 	noStroke();
 	// noLoop();
 	loadData();
@@ -145,8 +145,8 @@ function drawGeo(cd, state){
 		// DETERMINE COLOR
 		push();
 
-		if (state == 1) { // color by flood zone 07
-			if (zone == 1) {
+		if (state == 1) { // color by flood sandy
+			if (sd == 1) {
 				fill ("red")
 			} else {
 				fill ("black")
@@ -187,7 +187,7 @@ function drawGeo(cd, state){
 
 }
 
-function drawGeo_flood(cd){
+function drawGeo_flood(cd){  //maps changes bewteen sandy and zone
 	var bldgs_cd = bldgs_sorted[cd];
 	
 
@@ -197,11 +197,13 @@ function drawGeo_flood(cd){
 		var sd = bldgs_cd[i][1][8]		// DETERMINE COLOR
 		push();
 
-		if (zone == 1){ 
-			fill("red");
-		} else {
+		if (zone != 1 && sd == 1){ 
+			fill("pink");
+		} else if (sd == 1){
+			fill("orange");
+		} else{
 			fill("black");
-		};
+		}
 	
 		beginShape();
 		// console.log(outlines[1][0].length);
@@ -228,7 +230,7 @@ function drawGeo_flood(cd){
 }
 
 	
-function simple (cd){        // divide by 07, line by built year
+function simple (cd, sandyState){        // divide by 07, line by built year
 	var nozone_index = 0;
 	var zone_index = 0;
 	var bldgs_cd = bldgs_sorted[cd];
@@ -236,6 +238,7 @@ function simple (cd){        // divide by 07, line by built year
 	var col_mid = color(88, 87, 75);
 	var col_low = color(178, 177, 165);
 	var col_high = color(236, 0, 140);
+	var sandyState = sandyState || 0;
 	//DRAW BUILDING FOOTPRINTS
 	for (var i = 0; i < bldgs_cd.length; i++){
 		var off_1x;
@@ -256,13 +259,21 @@ function simple (cd){        // divide by 07, line by built year
 		// console.log(zone + sd);
 
 		// define color //////////////////////////////////////////////////
-		if (assessed < 1495800){           // 1495800 is the median 
+		
+		if (sandyState == 1){ // color by sandy
+			if(sd == 1){
+				fill("red");
+			} else {
+				fill("black");
+			}
+		} else if (assessed < 1495800){           // 1495800 is the median 
 			fill(col_low);
 		} else if (assessed < 47393100){     // 47393100 is the top 5% 
 			fill (col_mid);
 		} else {
 			fill (col_high);
 		}
+		
 		// define position ///////////////////////////////////////////////
 
 
@@ -328,19 +339,21 @@ function lineup07(cd, state){        // divide by 07, line by built year
 		// console.log(zone + sd);
 
 		// define color //////////////////////////////////////////////////
-		if (state == 1){  // color by flood zone 07
-			if (zone == 1) {
-				fill ("red")
-			} else {
-				fill ("black")
-			}
-		} else if (assessed < 1495800){           // 1495800 is the median 
-			fill(col_low);
-		} else if (assessed < 47393100){     // 47393100 is the top 5% 
-			fill (col_mid);
-		} else {
-			fill (col_high);
+		if (zone != 1 && sd == 1){ 
+			console.log(zone);
+			fill("pink");      // pink if unpredicted 
+		} else if (sd == 1){
+			fill("orange");	// orange if predicted 
+		} else{
+			fill("black");
 		}
+		// } else if (assessed < 1495800){           // 1495800 is the median 
+		// 	fill(col_low);
+		// } else if (assessed < 47393100){     // 47393100 is the top 5% 
+		// 	fill (col_mid);
+		// } else {
+		// 	fill (col_high);
+		// }
 		
 		// define position ///////////////////////////////////////////////
 		if (zone == 1){
@@ -389,10 +402,11 @@ function lineup07(cd, state){        // divide by 07, line by built year
 }	
 // console.log(bldgs_sorted[cd]);
 
-function lineupsandy(cd){        // divide by sandy, line by built year
+function lineupsandy(cd, state){        // divide by sandy, line by built year
 	var nozone_index = 0;
 	var zone_index = 0;
 	var bldgs_cd = bldgs_sorted[cd];
+	var state = state || 1;
 
 	// console.log(bfs.length);
 
@@ -416,14 +430,18 @@ function lineupsandy(cd){        // divide by sandy, line by built year
 		// console.log(bldgs_cd[i][1]);
 
 		// define color //////////////////////////////////////////////////
-		if (zone != 1 && sd == 1) {
-			fill ("blue")
-		} else if (assessed < 1495800){
-			fill("white");
-		} else if (assessed < 47393100){
-			fill ("grey");
+		if (state == 1){  // color by sandy
+			if (sd == 1) {
+				fill ("red")
+			} else {
+				fill ("black")
+			}
+		} else if (assessed < 1495800){           // 1495800 is the median 
+			fill(col_low);
+		} else if (assessed < 47393100){     // 47393100 is the top 5% 
+			fill (col_mid);
 		} else {
-			fill ("red");
+			fill (col_high);
 		}
 
 		// define position ///////////////////////////////////////////////
@@ -476,12 +494,12 @@ function lineupsandy(cd){        // divide by sandy, line by built year
 	// console.log(bldgs_sorted[cd]);
 }	
 
-// function mouseWheel (event){
-// 	// print (event.delta);
-// 	pos += event.delta;
-// 	return false;
+function mouseWheel (event){
+	// print (event.delta);
+	pos += event.delta;
+	return false;
 
-// }
+}
 
 
 function draw(){
@@ -489,54 +507,59 @@ function draw(){
 	var col_base = color(255);
 	background(col_base);
 
+
 	push();
 	// 1
-	translate(400, -40);
-	drawGeo(101, 0);
-
-	// 2
-	translate(0, 600);
-	drawGeo(101);
-	push();
-	translate(300,50);
-	simple(101);
-	pop();
-	// translate(450, 0);
-
-	// 3
-	translate(0, 500);
-	drawGeo(101,1);
-	push();
-	translate(450, 100);
-	lineup07(101, 1);
-	pop();
-
-	// 4
-
-	translate(0, 600);
-	drawGeo(101,1);
-	push();
-	translate(450, 100);
-	lineup07(101, 1);
-	translate(400, 0);
-	lineupsandy(101);
-	pop();
-
-	// 5
-
-	translate(0, 600);
-	drawGeo(101,1);
-	push();
-	translate(450, 100);
-	lineup07(101, 1);
-	translate(400, 0);
-	lineupsandy(101);
-	pop();
-	
-	push();
 	fill(0);
-	text("how to read it", 50, -pos);
+	var t1 = ("Lower Manhattan has a high concentration of valuable properties");
+	text(t1, 50, 600 - pos);
+	fill(255);
+	// rect(50, 0, width, 300);
+	translate(50, -40);
+	drawGeo(101, 0);
+	push();
+	translate(300,650 -pos);
+	simple(101, 0);
 	pop();
+	console.log(pos);
+
+	var first = 750;
+
+	if (pos > first){
+		background(col_base);
+		drawGeo(101,1);
+		fill(0);
+		var t2 = ("Many were flooded by Sandy");
+		text(t2, 50, 600);
+		push();
+		translate(300, 600 - pos + first);
+		simple(101, 1);
+
+		translate(180, 500)
+		lineupsandy(101,1);
+		pop();
+	}
+
+	var second = 2000;
+
+	if (pos > second){
+		background(col_base);
+		drawGeo_flood(101);
+
+		fill(0);
+		var t3 = ("Sandy flooded non-flood zones");
+		text(t3, 50, 600);
+		push();
+		translate(800, 600 - pos + 1500);
+		lineupsandy(101, 1);
+		
+		translate(-380, 0);
+		lineup07(101);
+	}
+	// 2
+
+	
+
 
 }
 
