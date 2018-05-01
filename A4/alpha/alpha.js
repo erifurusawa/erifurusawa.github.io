@@ -152,6 +152,7 @@ function draw(){
 	for (var i = 0; i < uniqueday.length; i ++){
 		// console.log(days[uniqueday[i]]);
 		// console.log(uniqueday[i]);
+		textSize(10);
 
 		push();
 		if (uniqueday[i] == "Saturday" || uniqueday[i] == "Sunday"){
@@ -171,7 +172,7 @@ function draw(){
 		// write day of week
 		
 		fill(255);
-		textSize(10);
+	
 		strokeWeight(0.5);
 		text(uniqueday[i], 5, bwidth/2 + 3);
 	
@@ -216,6 +217,7 @@ function draw(){
 	text(instruction, 50, 600, 240, 400);
 
 }
+
 
 function mouseOnDot(x, y){
 	return((mouseX - x)**2 + (mouseY-y)**2 < 2**2);
