@@ -66,7 +66,7 @@ function draw(){
 	var h = hour();
 	var mi = minute();
 
-	if (m.length == 1){
+	if (m.length == 1 && m != "10" && m != "11" && m != "12"){
 		var mo = "0" + m;
 	} else {
 		var mo = m;
@@ -154,15 +154,19 @@ function draw(){
 		var words = split(line2, " ");
 		// console.log(words.length);
 		var wordWidth = 0;
-	
+		fill("black");
 		for (var j = 0; j < words.length; j ++){
 		push();
-			var keyword = input.value();
-
-			if (words[j] == keyword || 
-				words[j].replace(/[;:,"'\']/i,"") == keyword){
-				fill("orange");
-			};
+			var keyword_original = input.value();
+			var keyword = keyword_original.toLowerCase();  // convert to lower case
+			
+			// define word in title to be matched to
+			var word = words[j].toLowerCase();
+	
+			if (word == keyword || 
+				word.replace(/[;:,"'\']/i,"") == keyword){
+					fill("orange");
+				};
 			text(words[j], wordWidth + margin,  (3 * i + 2) *lineheight + margin);
 		pop();
 		wordWidth = wordWidth + textWidth(words[j] + 1) ;
